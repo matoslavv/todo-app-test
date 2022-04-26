@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { TextField, Typography } from "@mui/material";
@@ -7,12 +7,7 @@ import styled from "@emotion/styled";
 import Modal from "@mui/material/Modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
-import {
-  createTask,
-  getTask,
-  taskActions,
-  updateTask,
-} from "../../store/slices/taskSlice";
+import { createTask, updateTask } from "../../store/slices/taskSlice";
 import { useAppDispatch, IRootStore } from "../../store/store";
 import { TaskFormValues, ITaskForm } from "../../types/ITask";
 import CustomButton from "../common/CustomButton";
@@ -45,9 +40,7 @@ const TaskForm = () => {
   const selectedTask = useSelector(
     (state: IRootStore) => state.task.selectedTask
   );
-  const [initialValues, setInitialValues] = useState(
-    new TaskFormValues(selectedTask!)
-  );
+  const [initialValues] = useState(new TaskFormValues(selectedTask!));
 
   const handleSubmit = (values: any) => {
     if (listId) {
@@ -70,17 +63,6 @@ const TaskForm = () => {
       handleClose();
     }
   };
-
-  useEffect(() => {
-    if (taskId && listId) {
-      dispatch(getTask({ listId, taskId }));
-      setInitialValues(new TaskFormValues(selectedTask!));
-    }
-
-    return () => {
-      dispatch(taskActions.setSelectedTask(null));
-    };
-  }, [dispatch, listId, taskId]);
 
   const formik = useFormik({
     initialValues,
